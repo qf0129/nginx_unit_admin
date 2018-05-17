@@ -1,4 +1,4 @@
-from bottle import Bottle, template
+from bottle import Bottle, template, static_file
 import os
 import commands
 import json
@@ -9,6 +9,10 @@ app = Bottle()
 @app.get('/')
 def index():
     return template('index.html')
+
+@app.get('/res/<filename>')
+def res_file(filename):
+    return static_file(filename, root='.')
 
 @app.get('/config')
 def get_config():

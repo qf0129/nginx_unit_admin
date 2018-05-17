@@ -2,32 +2,64 @@
 <html>
 <head>
     <title></title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" crossorigin="anonymous">
 
     <style type="text/css">
-        label{
-            font-weight: 600;
+        .config_type_title{
+            padding: 2px 5px;
+            color: #555;
+            margin: 10px 0;
         }
-        .config_list_div{
-            margin-left: 20px;
+        .app_item_row input{
+            padding: 2px 5px;
         }
-        .item_div_1{
+        .app_item_row input:nth-child(1){
+            width: 100px;
         }
-        .item_div_2{
-        }
-        .item_title{
-            background: #eee;
+        .app_item_row input:nth-child(2){
+            width: 300px;
         }
     </style>
 </head>
 <body>
-<h4>Listeners</h4>
-<div class="config_list_div listeners_div"></div>
-<h4>Applications</h4>
-<div class="config_list_div apps_div"></div>
+<script type="text/html" id="app_div">
+    <div>
+        <h2 class="config_type_title">listeners</h2>
+
+        <table class="table">
+            <tr><th>HOST:PORT</th><th>App</th><th>Tool</th></tr>
+            {<each listeners as val key>}
+                <tr>
+                    <td>{<key>}</td>
+                    <td>{<val.application>}</td>
+                    <td>
+                        <button class="btn">Todo</button>
+                    </td>
+                </tr>
+            {</each>}
+        </table>
+
+        <h2 class="config_type_title">applications</h2>
+        <table class="table">
+            <tr><th>App</th><th>Type</th><th>Processes</th><th>Tool</th></tr>
+            {<each applications as val key>}
+                <tr>
+                        <td>{<key>}</td>
+                        <td>{<val.type>}</td>
+                        <td>{<val.processes>}</td>
+                        <td>
+                            <button class="btn">Pull Master</button>
+                            <button class="btn">Restart</button>
+                        </td>
+                </tr>
+            {</each>}
+        </table>
+    </div>
+</script>
+
 
 <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="/res/template.js"></script>
 <script type="text/javascript">
     update_data();
     function update_data(){
@@ -38,7 +70,8 @@
             dataType: 'json',
             success:function(Data){
                 if (Data.code==0){
-                    fill_data(Data.config);
+                    var html = template('app_div', Data.config);
+                    $('body').append(html);
                 }else{
                     alert(Data);
                 }
@@ -49,32 +82,6 @@
         });
     }
 
-    function fill_data(config) {
-        var listeners = config.listeners;
-        for (var l in listeners){
-            var item_div_1 = $("<div class='item_div_1'></div>");
-            $('.listeners_div').append("<h5 class='item_title'>"+l+"<h5>");
-            $('.listeners_div').append(item_div_1);
-            for (var i in listeners[l]){
-                var item_div_2 = $("<div class='item_div_2'></div>");
-                item_div_1.append(item_div_2);
-                item_div_2.append("<label>"+i+":<label>");
-                item_div_2.append("<span>"+listeners[l][i]+"</span>");
-            };
-        };
-        var apps = config.applications;
-        for (var l in apps){
-            var item_div_1 = $("<div class='item_div_1'></div>");
-            $('.apps_div').append("<h5 class='item_title'>"+l+"<h5>");
-            $('.apps_div').append(item_div_1);
-            for (var i in apps[l]){
-                var item_div_2 = $("<div class='item_div_2'></div>");
-                item_div_1.append(item_div_2);
-                item_div_2.append("<label>"+i+":<label>");
-                item_div_2.append("<span>"+apps[l][i]+"</span>");
-            };
-        };
-    }
 </script>
 </body>
 </html>
